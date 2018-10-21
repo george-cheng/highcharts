@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>highcharts</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script src="js/data.js"></script>
+	<script src="js/highcharts.js"></script>
+	<script src="js/highcharts-3d.js"></script>
+	<script src="js/highcharts-more.js"></script>
+	<script src="js/exporting.js"></script>
+	<script src="js/export-data.js"></script>
+	<link rel="shortcut icon" href="http://www.berrylollipop.com/favicon/icon7.ico">
+
+	<style type="text/css">
+		*{margin: 0;padding: 0;}
+		#wrap1,#wrap2,#wrap3,#wrap4,#wrap5,#wrap6{
+			width: 500px;height: 300px;margin: 10px auto;
+			/*border: 1px solid blue;*/
+			display: inline-block;
+		}
+		#sliders{max-width: 800px;min-width: 310px;margin: 0 auto;float: right;}
+	</style>
+</head>
+<body>
+	<div id="wrap1"></div>
+	<div id="wrap2"></div>
+	<div id="wrap3"></div>
+	<div id="wrap4"></div>
+	<div id="wrap5"></div>
+	<div id="wrap6"></div>
+	<div id="sliders">
+		<table>
+			<tr><td>Alpha Angle</td><td><input type="range" name="" id="alpha" min="0" max="45"><span id="alpha-value" class="value"></span></td></tr>
+			<tr><td>Beta Angle</td><td><input type="range" name="" id="beta" min="-45" max="45"><span id="beta-value" class="value"></span></td></tr>
+			<tr><td>Depth</td><td><input type="range" name="" id="depth" min="20" max="100"><span id="depth-value" class="value"></span></td></tr>
+		</table>
+	</div>
+	<script type="text/javascript">
+        $('#wrap1').highcharts({
+
+            chart:{
+                type:'spline',
+                events:{
+                    load:function(){
+                        var series = this.series[0];
+                        // console.log(this)
+                        // $.get('xxx/json',function(res){
+                        // 	series.addPoint({
+                        // 		x:res.x,
+                        // 		y:res.y
+                        // 	},true true)
+                        // })
+                        var i = 10;
+                        setInterval(function(){
+                            series.addPoint({
+                                x:i++,
+                                y:Math.floor(Math.random()*10)
+                            },true,true)
+                        },1000)
+                    }
+                }
+            },
+
+            series:[{
+                data:(function(){
+                    var result = [];
+                    for(var i=0;i<10;i++){
+                        result.push({
+                            x:i,
+                            y:Math.floor(Math.random()*10)
+                        });
+                    }
+                    return result;
+
+                })()
+
+            }]
+        });
+        Highcharts.chart('wrap2',{
+            chart:{
+                // type:'spline',
+                option3d:{
+                    enabled:true,
+                    alpha:10,
+                    beta:25,
+                    depth:70
+                }
+            },
+            title:{
+                text:'3D Chart With Null Values'
+            },
+            subtitle:{
+                text:'notice the difference between a 0 value and a null point'
+            },
+            plotOptions:{
+                colume:{
+                    depth:70
+                }
+            },
+            xAxis:{
+                categories:Highcharts.getOptions().lang.shortMonths,
+                labels:{
+                    skew3d:true,
+                    style:{
+                        fontSize:'14px'
+                    }
+                }
+            },
+            series:[
+                {
+                    name:'去年',
+                    color:'red',
+                    data:(function(){
+                        var result2 = [];
+                        for(var i=0;i<arr.length;i++){
+                            result2.push(arr[i])
+                        }
+                        return result2
+                    })()
+                },
+                {
+                    name:'今年',
+                    color:'blue',
+                    data:(function(){
+                        var resul = [];
+                        for(var i=0;i<array.length;i++){
+                            resul.push(array[i])
+                        }
+                        return resul
+                    })()
+                }
+            ]
+        });
+        $('#wrap3').highcharts({
+            chart:{
+                type:'pie',
+                options3d:{
+                    enabled:true,
+                    alpha:45,
+                    depth:45,
+                    // beta:0
+                }
+
+            },
+            plotOptions:{
+                pie:{
+                    allowPointSelect:true,
+                    cursor:'pointer',
+                    depth:20,
+                    innerSize:50
+                },
+            },
+            colors:[
+                'gray',
+                'green',
+                'yellow',
+                'blue',
+                'white',
+                'black'
+            ],
+            title:{
+                text:'2015年各浏览器市场使用比例',
+                style:{
+                    fontSize:'18px',
+                    color:'blue'
+                }
+            },
+            subtitle:{
+                text:'主流浏览器的使用比重',
+                style:{
+                    fontSize:'14px',
+                    color:'#ccc',
+                }
+            },
+            credits:{
+                text:'彼岸',
+                style:{
+                    fontSize:'18px',
+                    color:'#690',
+
+                },
+                href:'http://www.berrylollipop.com'
+            },
+            series:[{
+                name:'浏览器比例',
+                data:[
+                    ['IE',52.17],
+                    ['Firefox',11.68],
+                    {
+                        name:'Chrome',
+                        y:29.49,
+                        sliced:true,
+                        // 默认选中
+                        selected:true,
+                        // 当其他的被选中时,清除当前被选中的样式
+                    },
+                    // ['Chrome',29.49],
+                    ['Safari',4.97],
+                    ['Opera',1.27],
+                    ['Other',0.42]
+                ]
+            }],
+            tooltip:{
+                style:{
+                    color:'blue'
+                },
+
+                formatter:function(){
+                    console.log(this)
+                    return this.key +' '+ this.y + ' '+this.color
+                }
+
+                // useHTML:true,
+                // pointFormat:'<span>{point.y}</span>',
+
+            }
+        });
+        Highcharts.chart('wrap4',{
+            chart:{
+                type:'column',
+                options3d:{
+                    enabled:true,
+                    alpha:15,
+                    beta:15,
+                    viewDistance:25,
+                    depth:40,
+                }
+            },
+            title:{
+                text:'total fruit consumption,grouped by gender '
+            },
+            xAxis:{
+                categories:['Apples','Orange','Pears','Grapes','Bananas'],
+                labels:{
+                    skew3d:true,
+                    style:{
+                        fontSize:'16px'
+                    }
+                }
+            },
+            yAxis:{
+                allowDecimals:false,
+                min:0,
+                title:{
+                    text:'Number of fruit',
+                    skew3d:true
+                }
+            },
+            tooltip:{
+                headerFormat:'<b>{point.key}</b>',
+                pointFormat:'<span style="color:{series.color}">\u25CF</span>{series.name:{point.y}/{point.strakTotal}}'
+            },
+            plotOptions:{
+                column:{
+                    straking:'normal',
+                    depth:40
+                }
+            },
+            series:[
+                {
+                    name:'John',
+                    data:[5,3,4,7,2],
+                    strak:'male'
+                },
+                {
+                    name:'Jor',
+                    data:[2,2,5,9,6],
+                    strak:'male'
+                },
+                {
+                    name:'Jane',
+                    data:[2,5,9,6,4],
+                    strak:'female'
+                },
+                {
+                    name:'Janet',
+                    data:[8,6,5,4,9],
+                    strak:'female'
+                }
+            ]
+        });
+        $('#wrap5').highcharts({
+            chart:{
+                type:'pie',
+                options3d:{
+                    enabled:true,
+                    alpha:45,
+                    //围绕x轴旋转
+                    // beta:10,
+
+
+                }
+            },
+            plotOptions:{
+                pie:{
+                    allowPointSelect:true,  //是否允许选择
+                    cursor:'pointer',
+                    depth:20,
+
+                }
+            },
+            credits:{
+                text:"彼岸",
+                href:'http://www.berrylollipop.com',
+                style:{
+                    color:'blue',
+                    fontSize:'18px',
+                }
+            },
+            title:{
+                text:'2018年各个浏览器的使用比例'
+            },
+            series:[{   //series 放到数组里面
+                name:'浏览器比例',
+                data:[
+                    ['IE',52.17],
+                    ['Firefox',11.68],
+                    // ['Chrome',29.49],
+                    {
+                        name:"Chrome",
+                        y:29.49,
+                        sliced:true,   //默认选中
+                        selected:true
+                    },
+                    ['Safari',4.97],
+                    ['IE',52.17],
+                    ['Opera',1.27],
+                    ['Other',0.42],
+                ]
+            }]
+        });
+        let chart = new Highcharts.Chart({
+            chart:{
+                renderTo:'wrap6',
+                type:'column',
+                options3d:{
+                    enabled:true,
+                    alpha:15,
+                    beta:15,
+                    depth:50,
+                    viewDistance:50
+                }
+            },
+            title:{
+                text:'Chart Rotation demo'
+            },
+            subtitle:{
+                text:'The Options By Dragging The Sliders Below'
+            },
+            plotoOptions:{
+                column:{
+                    depth:25
+                }
+            },
+            series:[{
+                data:[29.9,71.5,106.4,129.2,144.0,176.0,135.6,148.5,216.4,194.1,95.6,54.4]
+            }]
+        });
+        function showValues(){
+            $('#alpha-value').html(chart.options.chart.options3d.alpha);
+            $('#beta-value').html(chart.options.chart.options3d.beta);
+            $('#depth-value').html(chart.options.chart.options3d.depth);
+            console.log( $('#alpha-value') )
+        }
+        $('#sliders input').on('input change',function(){
+            chart.options.chart.options3d[this.id] = parseFloat(this.value)
+            showValues();
+            chart.redraw(false);
+        });
+        showValues();
+	</script>
+</body>
+</html>
